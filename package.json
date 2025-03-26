@@ -1,0 +1,19 @@
+{
+  "name": "@leonardoraele/result",
+  "version": "0.1.0",
+  "description": "An object that encapsulates the result of a synchronous operation. Inspired by Rust's Result type and JS's Promise interface.",
+  "author": "Leonardo Raele <leonardoraele@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "files": ["dist"],
+  "exports": "./dist/index.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@leonardoraele/err": "^0.1.1"
+  },
+  "keywords": [
+    "result"
+  ]
+}
