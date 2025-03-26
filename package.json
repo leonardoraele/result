@@ -1,6 +1,6 @@
 {
   "name": "@leonardoraele/result",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "An object that encapsulates the result of a synchronous operation. Inspired by Rust's Result type and JS's Promise interface.",
   "author": "Leonardo Raele <leonardoraele@gmail.com>",
   "license": "MIT",
