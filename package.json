@@ -12,12 +12,16 @@
   "scripts": {
     "test": "node --test",
     "build": "tsc",
-    "prepublish": "npm run build"
+    "prebuild": "rimraf dist",
+    "prepack": "npm run build"
   },
   "dependencies": {
     "@leonardoraele/err": "^0.1.1"
   },
   "keywords": [
     "result"
-  ]
+  ],
+  "devDependencies": {
+    "rimraf": "^6.0.1"
+  }
 }
