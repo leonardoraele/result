@@ -95,22 +95,23 @@ abstract class BaseResult<T = void> {
 export class SuccessResult<T = void> extends BaseResult<T> {
 	static readonly VOID = new SuccessResult<void>();
 
-	readonly #value: T;
+	/** @internal */
+	private readonly _value: T;
 
 	constructor(...params: T extends void ? [] : [T]) {
 		super();
-		this.#value = params[0] as T;
+		this._value = params[0] as T;
 	}
 
 	override isOk(): this is SuccessResult<T> { return true; }
 	override isErr(): this is FailureResult<T> { return false; }
-	override get value(): T { return this.#value; }
+	override get value(): T { return this._value; }
 	override get error(): undefined { return undefined; }
 
 	override void(): SuccessResult<void> { return SuccessResult.VOID; }
 	override map<R>(fn: (t: T) => R|Result<R>): Result<R> {
 		try {
-			const r = fn(this.#value);
+			const r = fn(this._value);
 			return r instanceof BaseResult ? r : Result.ok(r);
 		} catch (error) {
 			return Err.from(error).toResult();
@@ -118,28 +119,29 @@ export class SuccessResult<T = void> extends BaseResult<T> {
 	}
 	override mapErr(): this { return this; }
 	// override causes(): this { return this; }
-	override rescue(): T { return this.#value; }
-	override raises(): T { return this.#value; }
+	override rescue(): T { return this._value; }
+	override raises(): T { return this._value; }
 }
 
 export class FailureResult<T = void> extends BaseResult<T> {
-	#error: Err;
+	/** @internal */
+	private _error: Err;
 
 	constructor(error: Err) {
 		super();
-		this.#error = error;
+		this._error = error;
 	}
 
 	override isOk(): this is SuccessResult<T> { return false; }
 	override isErr(): this is FailureResult<T> { return true; }
 	override get value(): T|undefined { return undefined; }
-	override get error(): Err { return this.#error; }
+	override get error(): Err { return this._error; }
 
 	as<R>(): FailureResult<R> { return this as any; }
 	override void(): FailureResult<void> { return this.as<void>(); }
 	override map<R>(): Result<R> { return this.as<R>(); }
 	override mapErr(fn: (e: Err) => Err): this {
-		this.#error = fn(this.#error);
+		this._error = fn(this._error);
 		return this;
 	}
 	// override causes(message: string): this { return this.mapErr(e => e.causes(message)); }
@@ -147,23 +149,23 @@ export class FailureResult<T = void> extends BaseResult<T> {
 	override rescue(onerror: (e: Err) => T): T;
 	override rescue(onerror?: (e: Err) => T): T|undefined {
 		try {
-			return onerror ? onerror(this.#error) : undefined;
+			return onerror ? onerror(this._error) : undefined;
 		} catch (error) {
 			throw error instanceof Err
 				? error
 				: new Err('Error rescue failed.')
-					.with({ originalError: this.#error, rescueError: error });
+					.with({ originalError: this._error, rescueError: error });
 		}
 	}
 
 	override raises(message?: string/*, detailFactory?: () => Record<string, unknown>*/): T {
 		if (message) {
-			this.#error = this.#error.causes(message);
+			this._error = this._error.causes(message);
 
 			// if (detailFactory) {
 			// 	this.#error = this.#error.with(detailFactory());
 			// }
 		}
-		throw this.#error;
+		throw this._error;
 	}
 }
