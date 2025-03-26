@@ -8,7 +8,9 @@
   "files": ["dist"],
   "exports": "./dist/index.js",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "build": "tsc",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "@leonardoraele/err": "^0.1.1"
